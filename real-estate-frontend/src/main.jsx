@@ -1,13 +1,27 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import { BrowserRouter } from 'react-router-dom'
-import './index.css'
-import App from './App.jsx'
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-createRoot(document.getElementById('root')).render(
+import "./index.css";
+
+import App from "./App.jsx";
+import PropertyDetails from "./PropertyDetails.jsx";
+
+createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
-      <App />
+      <Routes>
+
+        {/* Main application */}
+        <Route path="/" element={<App />} />
+
+        {/* Property details page */}
+        <Route
+          path="/property/:propertyId"
+          element={<PropertyDetails />}
+        />
+
+      </Routes>
     </BrowserRouter>
-  </StrictMode>,
-)
+  </StrictMode>
+);

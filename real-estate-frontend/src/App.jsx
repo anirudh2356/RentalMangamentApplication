@@ -1,4 +1,7 @@
+
+
 import { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./App.css";
 
 /* =========================================================
@@ -564,6 +567,9 @@ const properties = [
 ========================================================= */
 
 function App() {
+
+  const navigate = useNavigate();
+
   const [selectedId, setSelectedId] =
     useState(properties[0].id);
 
@@ -776,6 +782,15 @@ function App() {
               </div>
 
             </div>
+
+            <button
+                    className="gold-button"
+                    onClick={() =>
+                    navigate(`/property/${selectedProperty.propertyNumber}`)
+                  }
+              >
+                  View Full Property Details →
+            </button>
 
             <div className="hero-stats">
 
