@@ -9,10 +9,34 @@ import {
   updateMessage,
   deleteMessage,
   fetchUsers,
+  fetchCurrentUser,
+  fetchCsrfToken,
+  fetchBrokerSettings,
+  login,
+  logout,
 } from './api';
 import Reviews from './Reviews';
 import Chatbot from './Chatbot';
+import Login from './Login';
 import './App.css';
+import BrokerLayout from './components/broker/BrokerLayout';
+import EmptyState from './components/broker/EmptyState';
+import BrokerDashboard from './pages/broker/BrokerDashboard';
+import Properties from './pages/broker/Properties';
+import Leads from './pages/broker/Leads';
+import PropertyMatching from './pages/broker/PropertyMatching';
+import SiteVisits from './pages/broker/SiteVisits';
+import Deals from './pages/broker/Deals';
+import Commissions from './pages/broker/Commissions';
+import Analytics from './pages/broker/Analytics';
+import FollowUps from './pages/broker/FollowUps';
+import Calendar from './pages/broker/Calendar';
+import Team from './pages/broker/Team';
+import Documents from './pages/broker/Documents';
+import Notifications from './pages/broker/Notifications';
+import Profile from './pages/broker/Profile';
+import Settings from './pages/broker/Settings';
+import Reports from './pages/broker/Reports';
 
 
 
@@ -78,13 +102,16 @@ function getAvatarClass(name) {
   return colors[total % colors.length];
 }
 
-export default function App() {
-  const [view, setView] = useState('messages');
-  const [users, setUsers] = useState([]);
-  const [currentUserId, setCurrentUserId] = useState(1);
-
-  const currentUser =
-    users.find((user) => user.id === currentUserId) || users[0] || { id: currentUserId, name: 'User', role: 'Messaging account' };
+function ExistingModulesApplication({
+  authenticatedUser,
+  onLogout,
+  authError,
+  initialView = 'messages',
+  embedded = false,
+}) {
+  const [view, setView] = useState(initialView);
+  const currentUserId = Number(authenticatedUser.id);
+  const currentUser = authenticatedUser;
 
   const [conversations, setConversations] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
@@ -93,7 +120,6 @@ export default function App() {
   const [draft, setDraft] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const [loadingUsers, setLoadingUsers] = useState(true);
   const [loadingList, setLoadingList] = useState(true);
   const [loadingMessages, setLoadingMessages] = useState(false);
   const [sending, setSending] = useState(false);
@@ -130,34 +156,19 @@ export default function App() {
           }))
           .filter((user) => Number.isFinite(user.id));
 
-        setUsers(normalizedUsers);
-
         if (normalizedUsers.length === 0) {
           setError('No users are available for messaging.');
-          setLoadingUsers(false);
           return;
         }
 
-        const effectiveCurrentUserId = normalizedUsers.some(
-          (user) => user.id === currentUserId
-        )
-          ? currentUserId
-          : normalizedUsers[0].id;
-
-        setCurrentUserId(effectiveCurrentUserId);
-
         const firstOther = normalizedUsers.find(
-          (user) => user.id !== effectiveCurrentUserId
+          (user) => user.id !== currentUserId
         );
 
         setNewChatUserId(firstOther ? String(firstOther.id) : '');
       } catch (e) {
         if (!cancelled) {
           setError(e.message || 'Failed to load users');
-        }
-      } finally {
-        if (!cancelled) {
-          setLoadingUsers(false);
         }
       }
     }
@@ -167,7 +178,7 @@ export default function App() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [currentUserId]);
 
   const loadConversations = useCallback(async (silent = false) => {
     try {
@@ -216,7 +227,7 @@ export default function App() {
       cancelled = true;
       clearInterval(interval);
     };
-  }, [loadConversations]);
+  }, [currentUserId, loadConversations]);
 
   /*
    * WebSocket connection
@@ -525,21 +536,6 @@ export default function App() {
     }
   }
 
-  function handleUserChange(e) {
-    const userId = Number(e.target.value);
-
-    setCurrentUserId(userId);
-    setSelectedId(null);
-    setMessages([]);
-    setDraft('');
-    setSearchQuery('');
-    setError('');
-    setLoadingList(true);
-
-    const otherUser = users.find((user) => user.id !== userId);
-    setNewChatUserId(String(otherUser?.id || ''));
-  }
-
   async function handleStartConversation(e) {
     e.preventDefault();
 
@@ -668,13 +664,13 @@ export default function App() {
   }
 
   return (
-    <div className="app">
+    <div className={`app${embedded ? ' broker-embedded-module' : ''}`}>
 
       {/* =====================================================
           APPLICATION HEADER
           ===================================================== */}
 
-      <header className="app-header">
+      {!embedded && <header className="app-header">
 
         <div className="app-brand">
           <div className="app-logo">
@@ -701,36 +697,26 @@ export default function App() {
             <span>{currentUser.role}</span>
           </div>
 
-          <select
-            value={currentUserId}
-            onChange={handleUserChange}
-            className="demo-user-select"
-            aria-label="Select current user"
-            disabled={loadingUsers || users.length === 0}
+          <button
+            type="button"
+            className="secondary-button small"
+            onClick={onLogout}
           >
-            {loadingUsers ? (
-              <option>Loading users...</option>
-            ) : (
-              users.map((user) => (
-                <option key={user.id} value={user.id}>
-                  Chat as {user.name}
-                </option>
-              ))
-            )}
-          </select>
+            Log out
+          </button>
 
           <span className="online-dot" />
 
         </div>
 
-      </header>
+      </header>}
 
 
       {/* =====================================================
           NAVIGATION
           ===================================================== */}
 
-      <div className="top-nav">
+      {!embedded && <div className="top-nav">
 
         <button
           className={
@@ -762,7 +748,7 @@ export default function App() {
           Reviews
         </button>
 
-      </div>
+      </div>}
 
 
       {/* =====================================================
@@ -773,6 +759,13 @@ export default function App() {
         <div className="error-banner">
           <span className="error-icon">!</span>
           <span>{error}</span>
+        </div>
+      )}
+
+      {authError && (
+        <div className="error-banner" role="alert">
+          <span className="error-icon">!</span>
+          <span>{authError}</span>
         </div>
       )}
 
@@ -885,7 +878,7 @@ export default function App() {
               </form>
 
               <p className="hint">
-                Demo users: 1 = Alice · 2 = Bob · 3 = Carol
+                Select a user ID to start a conversation.
               </p>
 
             </div>
@@ -1013,6 +1006,7 @@ export default function App() {
                         </li>
                       );
                     }
+
                   )}
 
                 </ul>
@@ -1475,8 +1469,299 @@ export default function App() {
 
       )}
 
-      <Chatbot />
+      {!embedded && <Chatbot />}
 
     </div>
+  );
+}
+
+function getDashboardPage(settings) {
+  const section = settings?.defaultDashboardSection;
+  const page = typeof section === 'string' ? section.toLowerCase().replaceAll('_', '-') : 'overview';
+  const supportedPages = ['overview', 'leads', 'properties', 'site-visits', 'deals', 'calendar', 'analytics'];
+  return supportedPages.includes(page) ? page : 'overview';
+}
+
+function BrokerWorkspace({
+  authenticatedUser,
+  csrfToken,
+  brokerSettings,
+  onLogout,
+  onProfileUpdated,
+  onSettingsUpdated,
+  authError,
+}) {
+  const [activePage, setActivePage] = useState(() => getDashboardPage(brokerSettings));
+
+  let pageContent;
+  if (activePage === 'overview') {
+    pageContent = <BrokerDashboard />;
+  } else if (activePage === 'leads') {
+    pageContent = <Leads csrfToken={csrfToken} />;
+  } else if (activePage === 'properties') {
+    pageContent = <Properties csrfToken={csrfToken} />;
+  } else if (activePage === 'matching') {
+    pageContent = <PropertyMatching />;
+  } else if (activePage === 'site-visits') {
+    pageContent = <SiteVisits csrfToken={csrfToken} />;
+  } else if (activePage === 'deals') {
+    pageContent = <Deals csrfToken={csrfToken} />;
+  } else if (activePage === 'commissions') {
+    pageContent = <Commissions />;
+  } else if (activePage === 'analytics') {
+    pageContent = <Analytics />;
+  } else if (activePage === 'reports') {
+    pageContent = <Reports />;
+  } else if (activePage === 'follow-ups') {
+    pageContent = <FollowUps csrfToken={csrfToken} />;
+  } else if (activePage === 'calendar') {
+    pageContent = <Calendar />;
+  } else if (activePage === 'team') {
+    pageContent = <Team />;
+  } else if (activePage === 'documents') {
+    pageContent = <Documents csrfToken={csrfToken} />;
+  } else if (activePage === 'notifications') {
+    pageContent = <Notifications csrfToken={csrfToken} />;
+  } else if (activePage === 'profile') {
+    pageContent = (
+      <Profile
+        csrfToken={csrfToken}
+        authenticatedUser={authenticatedUser}
+        onProfileUpdated={onProfileUpdated}
+      />
+    );
+  } else if (activePage === 'settings') {
+    pageContent = (
+      <Settings
+        csrfToken={csrfToken}
+        initialSettings={brokerSettings}
+        onSettingsUpdated={onSettingsUpdated}
+      />
+    );
+  } else if (activePage === 'messages' || activePage === 'reviews') {
+    pageContent = (
+      <ExistingModulesApplication
+        authenticatedUser={authenticatedUser}
+        onLogout={onLogout}
+        authError={authError}
+        initialView={activePage}
+        embedded
+      />
+    );
+  } else if (activePage === 'chatbot') {
+    pageContent = (
+      <div className="broker-module-placeholder">
+        <EmptyState
+          icon="✦"
+          title="Property assistant"
+          message="Open the assistant from the button at the bottom of the page to ask real-estate questions."
+        />
+      </div>
+    );
+  } else {
+    const pageTitle = {
+      leads: 'Lead management',
+      properties: 'Property listings',
+      matching: 'Property matching',
+      'site-visits': 'Site visits',
+      deals: 'Deal management',
+      'follow-ups': 'Follow-ups',
+      calendar: 'Calendar',
+      commissions: 'Commissions',
+      analytics: 'Analytics',
+      reports: 'Reports',
+      team: 'Team and agents',
+      documents: 'Documents',
+      notifications: 'Notifications',
+      profile: 'Broker profile',
+      settings: 'Workspace settings',
+    }[activePage] || 'Workspace';
+
+    pageContent = (
+      <div className="broker-module-placeholder">
+        <EmptyState
+          icon="◫"
+          title={`${pageTitle} is coming soon`}
+          message="This workspace section will be available in a later development phase."
+        />
+      </div>
+    );
+  }
+
+  return (
+    <BrokerLayout
+      user={authenticatedUser}
+      activePage={activePage}
+      onNavigate={setActivePage}
+      onLogout={onLogout}
+      theme={brokerSettings?.theme || 'SYSTEM'}
+    >
+      {authError && <div className="broker-alert" role="alert">{authError}</div>}
+      {pageContent}
+    </BrokerLayout>
+  );
+}
+
+export default function App() {
+  const [authState, setAuthState] = useState({
+    loading: true,
+    user: null,
+    brokerSettings: null,
+    csrfToken: null,
+    error: '',
+  });
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function restoreSession() {
+      try {
+        const csrf = await fetchCsrfToken();
+        let user = null;
+
+        try {
+          user = await fetchCurrentUser();
+        } catch (requestError) {
+          if (requestError.status !== 401) {
+            throw requestError;
+          }
+        }
+
+        let brokerSettings = null;
+        if (user?.role === 'BROKER') {
+          try {
+            brokerSettings = await fetchBrokerSettings();
+          } catch {
+            // Settings are optional at sign-in; dashboard falls back to Overview.
+          }
+        }
+
+        if (!cancelled) {
+          setAuthState({
+            loading: false,
+            user,
+            brokerSettings,
+            csrfToken: csrf.token,
+            error: '',
+          });
+        }
+      } catch (requestError) {
+        if (!cancelled) {
+          setAuthState({
+            loading: false,
+            user: null,
+            csrfToken: null,
+            error: requestError.message || 'Unable to connect to the server.',
+          });
+        }
+      }
+    }
+
+    restoreSession();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  async function handleLogin(email, password) {
+    const csrf = await fetchCsrfToken();
+    await login(email, password, csrf.token);
+    const user = await fetchCurrentUser();
+    const refreshedCsrf = await fetchCsrfToken();
+    let brokerSettings = null;
+    if (user.role === 'BROKER') {
+      try {
+        brokerSettings = await fetchBrokerSettings();
+      } catch {
+        // Keep login successful and use the Overview/System defaults on settings failure.
+      }
+    }
+    setAuthState({
+      loading: false,
+      user,
+      brokerSettings,
+      csrfToken: refreshedCsrf.token,
+      error: '',
+    });
+  }
+
+  function handleProfileUpdated(profile) {
+    setAuthState((previous) => ({
+      ...previous,
+      user: { ...previous.user, ...profile },
+    }));
+  }
+
+  function handleSettingsUpdated(settings) {
+    setAuthState((previous) => ({
+      ...previous,
+      brokerSettings: settings,
+    }));
+  }
+
+  async function handleLogout() {
+    const csrfToken = authState.csrfToken;
+    setAuthState({
+      loading: false,
+      user: null,
+      csrfToken: null,
+      error: '',
+    });
+
+    try {
+      await logout(csrfToken);
+      const csrf = await fetchCsrfToken();
+      setAuthState({
+        loading: false,
+        user: null,
+        csrfToken: csrf.token,
+        error: '',
+      });
+    } catch (requestError) {
+      setAuthState({
+        loading: false,
+        user: null,
+        csrfToken: null,
+        error: requestError.message || 'Unable to log out.',
+      });
+    }
+
+  }
+
+  if (authState.loading) {
+    return <main className="auth-loading">Checking your session...</main>;
+  }
+
+  if (!authState.user) {
+    return (
+      <Login
+        onLogin={handleLogin}
+        initialError={authState.error}
+      />
+    );
+  }
+
+  if (authState.user.role === 'BROKER') {
+    return (
+      <BrokerWorkspace
+        key={authState.user.id}
+        authenticatedUser={authState.user}
+        csrfToken={authState.csrfToken}
+        brokerSettings={authState.brokerSettings}
+        onProfileUpdated={handleProfileUpdated}
+        onSettingsUpdated={handleSettingsUpdated}
+        onLogout={handleLogout}
+        authError={authState.error}
+      />
+    );
+  }
+
+  return (
+    <ExistingModulesApplication
+      key={authState.user.id}
+      authenticatedUser={authState.user}
+      onLogout={handleLogout}
+      authError={authState.error}
+    />
   );
 }

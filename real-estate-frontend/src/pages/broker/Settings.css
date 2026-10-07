@@ -1,0 +1,361 @@
+.broker-settings {
+  --settings-ink: #172033;
+  --settings-muted: #687386;
+  --settings-border: #e5e9f0;
+  --settings-surface: #fff;
+  --settings-soft: #f8fafc;
+  display: grid;
+  gap: 18px;
+  max-width: 1050px;
+  margin: 0 auto;
+  color: var(--settings-ink);
+}
+
+.settings-heading {
+  margin-bottom: 3px;
+}
+
+.settings-eyebrow {
+  margin: 0 0 6px;
+  color: #73829a;
+  font-size: 0.72rem;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+}
+
+.settings-heading h2 {
+  margin: 0;
+  color: var(--settings-ink);
+  font-size: clamp(1.7rem, 3vw, 2rem);
+  font-weight: 740;
+  letter-spacing: -0.04em;
+}
+
+.settings-heading > p:last-child,
+.settings-section-heading p {
+  margin: 6px 0 0;
+  color: var(--settings-muted);
+  font-size: 0.88rem;
+}
+
+.settings-section {
+  padding: 22px 24px;
+  border: 1px solid var(--settings-border);
+  border-radius: 14px;
+  background: var(--settings-surface);
+  box-shadow: 0 5px 18px rgba(15, 23, 42, 0.03);
+}
+
+.settings-section-heading h3 {
+  margin: 0;
+  color: var(--settings-ink);
+  font-size: 1rem;
+  font-weight: 720;
+}
+
+.settings-preference-list {
+  margin-top: 17px;
+  border-top: 1px solid var(--settings-border);
+}
+
+.settings-toggle-row {
+  display: flex;
+  min-height: 64px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  border-bottom: 1px solid var(--settings-border);
+  cursor: pointer;
+}
+
+.settings-toggle-row:last-child {
+  border-bottom: 0;
+}
+
+.settings-toggle-copy {
+  display: grid;
+  gap: 4px;
+}
+
+.settings-toggle-copy strong,
+.settings-theme-option strong {
+  color: var(--settings-ink);
+  font-size: 0.88rem;
+  font-weight: 650;
+}
+
+.settings-toggle-copy small,
+.settings-theme-option small {
+  color: var(--settings-muted);
+  font-size: 0.77rem;
+}
+
+.settings-toggle {
+  position: relative;
+  width: 42px;
+  height: 24px;
+  flex: 0 0 42px;
+  appearance: none;
+  border: 0;
+  border-radius: 999px;
+  background: #cbd2dd;
+  cursor: pointer;
+  transition: background 140ms ease;
+}
+
+.settings-toggle::after {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.2);
+  content: '';
+  transition: transform 140ms ease;
+}
+
+.settings-toggle:checked {
+  background: #2d62bd;
+}
+
+.settings-toggle:checked::after {
+  transform: translateX(18px);
+}
+
+.settings-toggle:focus-visible,
+.settings-theme-option:focus-within,
+.settings-select-label select:focus-visible,
+.settings-actions button:focus-visible {
+  outline: 3px solid rgba(45, 98, 189, 0.28);
+  outline-offset: 2px;
+}
+
+.settings-select-label {
+  display: grid;
+  max-width: 430px;
+  gap: 8px;
+  margin-top: 18px;
+  color: var(--settings-ink);
+  font-size: 0.84rem;
+  font-weight: 650;
+}
+
+.settings-select-label select {
+  min-height: 43px;
+  padding: 8px 12px;
+  border: 1px solid var(--settings-border);
+  border-radius: 8px;
+  background: var(--settings-surface);
+  color: var(--settings-ink);
+  font: inherit;
+}
+
+.settings-theme-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.settings-theme-option {
+  display: flex;
+  min-height: 75px;
+  align-items: center;
+  gap: 11px;
+  padding: 12px;
+  border: 1px solid var(--settings-border);
+  border-radius: 9px;
+  background: var(--settings-surface);
+  cursor: pointer;
+}
+
+.settings-theme-option.is-selected {
+  border-color: #6c91d0;
+  background: #f3f7ff;
+}
+
+.settings-theme-option input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.settings-theme-indicator {
+  display: grid;
+  width: 17px;
+  height: 17px;
+  flex: 0 0 17px;
+  place-items: center;
+  border: 1px solid #aeb8c7;
+  border-radius: 50%;
+}
+
+.settings-theme-option.is-selected .settings-theme-indicator {
+  border-color: #2d62bd;
+}
+
+.settings-theme-option.is-selected .settings-theme-indicator::after {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #2d62bd;
+  content: '';
+}
+
+.settings-theme-option > span:last-child {
+  display: grid;
+  gap: 4px;
+}
+
+.settings-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-bottom: 12px;
+}
+
+.settings-actions button {
+  min-height: 41px;
+  padding: 0 16px;
+  border: 1px solid var(--settings-border);
+  border-radius: 8px;
+  background: var(--settings-surface);
+  color: var(--settings-ink);
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.settings-actions .settings-save {
+  border-color: #2859b8;
+  background: #2859b8;
+  color: #fff;
+}
+
+.settings-actions .settings-save:hover:not(:disabled) {
+  background: #214c9f;
+}
+
+.settings-actions button:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+.settings-message,
+.settings-loading {
+  margin: 0;
+  padding: 11px 13px;
+  border-radius: 8px;
+  font-size: 0.86rem;
+}
+
+.settings-error {
+  background: #fff0f0;
+  color: #a12b2b;
+}
+
+.settings-success {
+  background: #e8f7ef;
+  color: #187447;
+}
+
+.settings-loading {
+  color: var(--settings-muted);
+}
+
+.settings-load-error {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+}
+
+.settings-retry {
+  min-height: 38px;
+  padding: 0 13px;
+  border: 1px solid var(--settings-border);
+  border-radius: 8px;
+  background: var(--settings-surface);
+  color: var(--settings-ink);
+  font-size: 0.83rem;
+  font-weight: 700;
+}
+
+.broker-shell[data-theme='DARK'] .broker-settings {
+  --settings-ink: #e7ecf5;
+  --settings-muted: #a5afbf;
+  --settings-border: #343a49;
+  --settings-surface: #202532;
+  --settings-soft: #282e3b;
+}
+
+.broker-shell[data-theme='DARK'] .settings-theme-option.is-selected {
+  background: #27354e;
+}
+
+.broker-shell[data-theme='DARK'] .settings-toggle {
+  background: #515a6b;
+}
+
+.broker-shell[data-theme='DARK'] .settings-toggle:checked {
+  background: #5484d4;
+}
+
+.broker-shell[data-theme='DARK'] .settings-error {
+  background: #472b32;
+  color: #ffb5bd;
+}
+
+.broker-shell[data-theme='DARK'] .settings-success {
+  background: #203d34;
+  color: #9de0bd;
+}
+
+@media (prefers-color-scheme: dark) {
+  .broker-shell[data-theme='SYSTEM'] .broker-settings {
+    --settings-ink: #e7ecf5;
+    --settings-muted: #a5afbf;
+    --settings-border: #343a49;
+    --settings-surface: #202532;
+    --settings-soft: #282e3b;
+  }
+
+  .broker-shell[data-theme='SYSTEM'] .settings-theme-option.is-selected {
+    background: #27354e;
+  }
+
+  .broker-shell[data-theme='SYSTEM'] .settings-toggle {
+    background: #515a6b;
+  }
+
+  .broker-shell[data-theme='SYSTEM'] .settings-toggle:checked {
+    background: #5484d4;
+  }
+
+  .broker-shell[data-theme='SYSTEM'] .settings-error {
+    background: #472b32;
+    color: #ffb5bd;
+  }
+
+  .broker-shell[data-theme='SYSTEM'] .settings-success {
+    background: #203d34;
+    color: #9de0bd;
+  }
+}
+
+@media (max-width: 700px) {
+  .settings-theme-options {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 520px) {
+  .settings-section {
+    padding: 17px;
+  }
+
+  .settings-toggle-row {
+    gap: 12px;
+  }
+}
