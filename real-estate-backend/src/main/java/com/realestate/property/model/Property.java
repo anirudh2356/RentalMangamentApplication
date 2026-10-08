@@ -19,7 +19,7 @@ import java.math.BigDecimal;
 import java.time.Instant;
 
 @Entity
-@Table(name = "properties")
+@Table(name = "broker_properties")
 public class Property {
 
     @Id

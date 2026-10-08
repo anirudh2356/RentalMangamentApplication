@@ -20,7 +20,7 @@ import jakarta.persistence.Table;
 import java.time.Instant;
 
 @Entity
-@Table(name = "site_visits")
+@Table(name = "broker_site_visits")
 public class SiteVisit {
 
     @Id

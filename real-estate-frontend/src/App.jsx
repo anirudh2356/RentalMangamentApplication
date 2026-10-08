@@ -1495,7 +1495,7 @@ function BrokerWorkspace({
 
   let pageContent;
   if (activePage === 'overview') {
-    pageContent = <BrokerDashboard />;
+    pageContent = <BrokerDashboard onNavigate={setActivePage} />;
   } else if (activePage === 'leads') {
     pageContent = <Leads csrfToken={csrfToken} />;
   } else if (activePage === 'properties') {

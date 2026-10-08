@@ -1015,3 +1015,240 @@
     margin: 10px 14px 0;
   }
 }
+/* =========================================================
+   BROKER DASHBOARD UPGRADE
+   Added on top of existing dashboard styles
+   ========================================================= */
+
+.broker-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+  min-height: 155px;
+  padding: 30px 34px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #18213f 0%, #34428e 55%, #6572dc 100%);
+  color: white;
+  box-shadow: 0 14px 35px rgba(31, 45, 100, 0.18);
+  overflow: hidden;
+}
+
+.broker-hero-copy {
+  flex: 1;
+}
+
+.broker-hero-kicker {
+  display: block;
+  margin-bottom: 9px;
+  color: rgba(255,255,255,.72);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.7px;
+}
+
+.broker-hero h2 {
+  margin: 0;
+  color: white;
+  font-size: 28px;
+  font-weight: 750;
+  letter-spacing: -.6px;
+}
+
+.broker-hero h2 span {
+  color: #b9c1ff;
+}
+
+.broker-hero p {
+  margin: 10px 0 0;
+  color: rgba(255,255,255,.78);
+  font-size: 13px;
+}
+
+.broker-hero-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 7px;
+  min-width: 150px;
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.broker-hero-meta time {
+  color: rgba(255,255,255,.62);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.broker-live-dot {
+  width: 9px;
+  height: 9px;
+  margin-right: 115px;
+  margin-bottom: -21px;
+  border-radius: 50%;
+  background: #61e6a0;
+  box-shadow: 0 0 0 5px rgba(97,230,160,.14);
+}
+
+/* LIVE WORKFLOW */
+
+.broker-live-pill {
+  padding: 6px 11px;
+  border: 1px solid #ccefdc;
+  border-radius: 999px;
+  background: #f0fff6;
+  color: #16804a;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .7px;
+}
+
+/* QUICK ACTIONS */
+
+.broker-actions-panel {
+  margin-top: 0;
+}
+
+.broker-quick-actions button {
+  cursor: pointer;
+  transition: transform .18s ease, box-shadow .18s ease,
+              border-color .18s ease, background .18s ease;
+}
+
+.broker-quick-actions button:hover {
+  transform: translateY(-2px);
+  border-color: #cbd5ea;
+  background: #fafcff;
+  box-shadow: 0 8px 20px rgba(25,45,80,.08);
+}
+
+.broker-quick-actions button strong {
+  color: #35445a;
+}
+
+.broker-quick-actions button small {
+  color: #8d99aa;
+}
+
+/* BUSINESS PULSE */
+
+.broker-pulse {
+  padding: 20px;
+  border: 1px solid #dfe5f2;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #f4f6ff, #ffffff);
+}
+
+.broker-pulse-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.broker-pulse-heading h2 {
+  margin: 4px 0 0;
+  color: #26364c;
+  font-size: 17px;
+  font-weight: 720;
+}
+
+.broker-pulse-note {
+  color: #8995a7;
+  font-size: 10px;
+}
+
+.broker-pulse-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.broker-pulse-item {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 13px;
+  border: 1px solid #e6eaf1;
+  border-radius: 9px;
+  background: white;
+}
+
+.broker-pulse-icon {
+  display: grid;
+  width: 35px;
+  height: 35px;
+  flex: 0 0 35px;
+  place-items: center;
+  border-radius: 9px;
+  background: #edf3fb;
+  color: #41688f;
+  font-size: 15px;
+}
+
+.broker-pulse-item div {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.broker-pulse-item strong {
+  color: #263b59;
+  font-size: 19px;
+  font-weight: 750;
+}
+
+.broker-pulse-item div span {
+  color: #8c97a6;
+  font-size: 9px;
+}
+
+.broker-pulse-item button {
+  padding: 6px 9px;
+  border: 1px solid #dfe5ed;
+  border-radius: 6px;
+  background: white;
+  color: #42678d;
+  font-size: 9px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.broker-pulse-item button:hover {
+  background: #edf3fa;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 900px) {
+  .broker-hero {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .broker-hero-meta {
+    align-items: flex-start;
+  }
+
+  .broker-pulse-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .broker-hero {
+    padding: 22px;
+  }
+
+  .broker-hero h2 {
+    font-size: 23px;
+  }
+
+  .broker-pulse-heading {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

@@ -22,7 +22,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "deals")
+@Table(name = "broker_deals")
 public class Deal {
 
     @Id

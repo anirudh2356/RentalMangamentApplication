@@ -19,7 +19,7 @@ import jakarta.persistence.Table;
 import java.time.Instant;
 
 @Entity
-@Table(name = "follow_ups")
+@Table(name = "broker_follow_ups")
 public class FollowUp {
 
     @Id
